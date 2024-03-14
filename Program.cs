@@ -20,8 +20,17 @@ else
     connection = Environment.GetEnvironmentVariable("DefaultConnection");
 }
 
-builder.Services.AddDbContext<ToDoContext>(options =>
+try
+{
+    var hi = "yes";
+    builder.Services.AddDbContext<ToDoContext>(options =>
     options.UseSqlServer(connection));
+
+} catch (Exception ex)
+{
+    throw ex;
+}
+
 
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -47,7 +56,9 @@ if (app.Environment.IsDevelopment())
 app.MapGet("/", () => "Landing page");
 
 
-app.MapGet("/allToDo", async (ToDoContext db) => await db.ToDoItems.ToListAsync());
+app.MapGet("/allToDo", async (ToDoContext db) => {
+    await db.ToDoItems.ToListAsync();
+});
 
 app.MapPost("/new", async (ToDoContext db, ToDoItem todo) => {
     db.ToDoItems.Add(todo);
@@ -61,6 +72,7 @@ app.MapDelete("/del/{id}", async (ToDoContext db, long id) => {
         db.Remove(todo);
         await db.SaveChangesAsync();
     }
+    //Put return shit here
 });
 
 app.Run();
