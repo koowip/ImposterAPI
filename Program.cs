@@ -56,9 +56,7 @@ if (app.Environment.IsDevelopment())
 app.MapGet("/", () => "Landing page");
 
 
-app.MapGet("/allToDo", async (ToDoContext db) => {
-    await db.ToDoItems.ToListAsync();
-});
+app.MapGet("/allToDo", async (ToDoContext db) => await db.ToDoItems.ToListAsync());
 
 app.MapPost("/new", async (ToDoContext db, ToDoItem todo) => {
     db.ToDoItems.Add(todo);
