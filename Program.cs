@@ -2,15 +2,26 @@ using Microsoft.EntityFrameworkCore;
 using ImposterAPI.Models;
 
 
-
-
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddCors();
 
-builder.Services.AddDbContext<ToDoContext>(opt =>
-    opt.UseInMemoryDatabase("TodoList"));
+//builder.Services.AddDbContext<ToDoContext>(opt =>
+//    opt.UseInMemoryDatabase("TodoList"));
 
 
+var connection = String.Empty;
+if (builder.Environment.IsDevelopment())
+{
+    builder.Configuration.AddEnvironmentVariables().AddJsonFile("appsettings.json");
+    connection = builder.Configuration.GetConnectionString("DefaultConnection");
+}
+else
+{
+    connection = Environment.GetEnvironmentVariable("DefaultConnection");
+}
+
+builder.Services.AddDbContext<ToDoContext>(options =>
+    options.UseSqlServer(connection));
 
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
